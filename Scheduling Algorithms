@@ -1,1 +1,65 @@
+**FCFS**
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void findWaitingTime(vector<int>& processes, int n, vector<int>& bt, vector<int>& wt) {
+    wt[0] = 0;  // Waiting time for the first process is always 0
+    for (int i = 1; i < n; i++) {
+        wt[i] = bt[i - 1] + wt[i - 1];  // Waiting time of each process
+    }}
+void findTurnaroundTime(vector<int>& processes, int n, vector<int>& bt, vector<int>& wt, vector<int>& tat) {
+    for (int i = 0; i < n; i++) {
+        tat[i] = bt[i] + wt[i];  // Turnaround time is the burst time + waiting time
+    }}
+void findAverageTime(vector<int>& processes, int n, vector<int>& bt) {
+    vector<int> wt(n), tat(n);
+    int total_wt = 0, total_tat = 0;
+
+    findWaitingTime(processes, n, bt, wt);
+    findTurnaroundTime(processes, n, bt, wt, tat);
+
+    // Calculating total waiting time and total turnaround time
+    for (int i = 0; i < n; i++) {
+        total_wt += wt[i];
+        total_tat += tat[i];
+    }
+    cout << "\nProcess\tBurst Time\tWaiting Time\tTurnaround Time\n";
+    for (int i = 0; i < n; i++) {
+        cout << processes[i] << "\t" << bt[i] << "\t\t" << wt[i] << "\t\t" << tat[i] << endl;
+    }
+    cout << "\nAverage Waiting Time: " << (float)total_wt / n;
+    cout << "\nAverage Turnaround Time: " << (float)total_tat / n;
+}
+void printGanttChart(vector<int>& processes, int n, vector<int>& bt, vector<int>& wt) {
+    cout << "\nGantt Chart:\n";
+    // Print the top row of the Gantt chart
+    for (int i = 0; i < n; i++) {
+        cout << "| P" << processes[i] << " ";
+    }
+    cout << "|\n";
+
+    // Print the bottom row showing the time
+    int current_time = 0;
+    for (int i = 0; i < n; i++) {
+        current_time += bt[i];
+        cout << current_time << "\t";
+    }
+    cout << "\n";}
+int main() {
+    int n;
+    cout << "Enter the number of processes: ";
+    cin >> n;
+    vector<int> processes(n), burst_time(n);
+    // Input burst time for each process
+    cout << "\nEnter the burst time for each process:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "Burst time for P" << i + 1 << ": ";
+        processes[i] = i + 1;  // Process numbering starts from 1
+        cin >> burst_time[i];
+    }
+    findAverageTime(processes, n, burst_time);
+    printGanttChart(processes, n, burst_time, burst_time); // FCFS: wt = bt (simplified)
+    return 0;
+}
 
